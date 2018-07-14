@@ -1,0 +1,74 @@
+1. How many variables are included in this data set (data set: arbuthnot)?
+data(arbuthnot)
+dim(arbuthnot)
+
+2. Extract just the counts of girls born.
+arbuthnot$girls
+
+3. Calculate the total number of births for each year and store these values in a new variable called total in the present dataset. Then, calculate the proportion of boys born each year and store these values in a new variable called prop_boys in the same dataset. Plot these values over time and based on the plot determine if the following statement is true or false: The proportion of boys born in the US has decreased over time.
+arbuthnot <- arbuthnot %>%
+  
+mutate(total = boys + girls)
+
+4.Create a new variable called more_boys which contains the value of either TRUE if that year had more boys than girls, or FALSE if that year did not. Based on this variable which of the following statements is true? 
+data("present")
+present <- present %>%
+  mutate(more_boys= boys>girls)
+ 
+5.Calculate the boy-to-girl ratio each year, and store these values in a new variable called prop_boy_girl in the present dataset. Plot these values over time. Describe the trend.
+ mutate(prop_boy_girl= boys/girls)
+ggplot(data=present, aes(x=year,y=prop_boy_girl)) + geom_line()+geom_point()
+
+............................................................................................................
+1. Create a new data frame that includes flights headed to SFO in February, and save this data frame assfo_feb_flights. How many flights meet these criteria?
+data(nycflights)
+sfo_feb_flights <- nycflights%>%
+  filter(dest=="SFO",month==2)
+2. Make a histogram and calculate appropriate summary statistics for arrival delays of sfo_feb_flights.
+sfo_feb_flights%>%
+  summarise(mean_dd=mean(arr_delay),sd_dd=sd(arr_delay), n=(n))
+ggplot(data=sfo_feb_flights, aes(arr_delay))+ geom_histogram()
+3. Calculate the median and interquartile range for arr_delays of flights in the sfo_feb_flights data frame, grouped by carrier. Which carrier has the highest IQR of arrival delays?
+ sfo_feb_flights%>%
+  summarise(mean_dd=mean(arr_delay),sd_dd=sd(arr_delay), n=())
+ggplot(data=sfo_feb_flights, aes(arr_delay))+ geom_histogram()
+
+4.Considering the data from all the NYC airports, which month has the highest average departure delay?
+nycflights%>%
+  group_by(month)%>%
+summarise(mean_dd=mean(dep_delay))%>%
+arrange(desc(mean_dd))
+5. Which month has the highest median departure delay from an NYC airport?
+group_by(month)%>%
+  summarise(median_dd=median(dep_delay))%>%
+  arrange(desc(median_dd))
+6. If you were selecting an airport simply based on on time departure percentage, which NYC airport would you choose to fly out of?
+nycflights<-nycflights%>%
+  mutate(arr_type= ifelse(arr_time<=0,"on time","delayed"))%>%
+  summarise(arr_time_rate=sum(arr_type=="on time")/n())
+nycflights <- nycflights %>%
+  mutate(dep_type = ifelse(dep_delay < 5, "on time", "delayed"))
+nycflights %>%
+  group_by(origin) %>%
+  summarise(ot_dep_rate = sum(dep_type == "on time") / n()) %>%
+  arrange(desc(ot_dep_rate))
+ ggplot(data=nycflights, aes(x=origin,fill=dept_type))+geom_bar()
+7. Mutate the data frame so that it includes a new variable that contains the average speed, avg_speed traveled by the plane for each journey (in mph). What is the tail number of the plane with the fastest avg_speed? Hint: Average speed can be calculated as distance divided by number of hours of travel, and note that air_time is given in minutes. If you just want to show the avg_speed and tailnum and none of the other variables, use the select function at the end of your pipe to select just these two variables with select(avg_speed, tailnum). You can google this tail number to find out more about the aircraft.
+nycflights<-nycflights%>%
+  mutate(average_speed= distance/(air_time/60))
+select(nycflights,average_speed,tailnum)%>%
+arrange(desc(average_speed))
+ggplot(data=nycflights, aes(x=distance, y=average_speed))+geom_point()
+.............................................................................................................................
+1. Using `calc_streak`, compute the streak lengths of `sim_basket`, and save the results in a data frame called `sim_streak`. Note that since the `sim_streak` object is just a vector and not a variable in a data frame, we don't need to first select it from a data frame like we did earlier when we calculated the streak lengths for Kobe's shots.
+data(kobe_basket)
+kobe_streak <-calc_streak(kobe_basket$shot)
+ggplot(data=kobe_streak, aes(x=length)) +geom_histogram(binwidth = 1)
+2. **Exercise**: Develop a simulation to reflect a shooting percentage of 45%? Make this adjustment, then run a simulation to sample 133 shots. Assign the output of this simulation to a new object called `sim_basket`.
+shot_outcomes=c("H","M")
+sim_basket <-sample(shot_outcomes,size=133, replace=TRUE, prob=c(0.45,0.55))
+sim_streak <-calc_streak(sim_basket)
+ggplot(data=sim_streak, aes(x=length)) +geom_histogram(binwidth = 1)
+
+
+

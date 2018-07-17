@@ -27,7 +27,7 @@ sfo_feb_flights <- nycflights%>%
 2. Make a histogram and calculate appropriate summary statistics for arrival delays of sfo_feb_flights.
 sfo_feb_flights%>%
   summarise(mean_dd=mean(arr_delay),sd_dd=sd(arr_delay), n=(n))
-ggplot(data=sfo_feb_flights, aes(arr_delay))+ geom_histogram()
+ggplot(data=sfo_feb_flights, aes(arr_delay))+ geom_histogram(binwidth = 15)
 3. Calculate the median and interquartile range for arr_delays of flights in the sfo_feb_flights data frame, grouped by carrier. Which carrier has the highest IQR of arrival delays?
  sfo_feb_flights%>%
   group_by(carrier)%>%

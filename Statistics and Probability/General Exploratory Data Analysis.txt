@@ -30,9 +30,8 @@ sfo_feb_flights%>%
 ggplot(data=sfo_feb_flights, aes(arr_delay))+ geom_histogram()
 3. Calculate the median and interquartile range for arr_delays of flights in the sfo_feb_flights data frame, grouped by carrier. Which carrier has the highest IQR of arrival delays?
  sfo_feb_flights%>%
-  summarise(mean_dd=mean(arr_delay),sd_dd=sd(arr_delay), n=())
-ggplot(data=sfo_feb_flights, aes(arr_delay))+ geom_histogram()
-
+  group_by(carrier)%>%
+  summarise(median_dd=median(arr_delay),IQR_dd=IQR(arr_delay),n=(n))
 4.Considering the data from all the NYC airports, which month has the highest average departure delay?
 nycflights%>%
   group_by(month)%>%
